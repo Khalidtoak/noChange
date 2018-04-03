@@ -1,0 +1,27 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.group1.swepproject.user.nochange.Fragments.DebtorsRecord">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+    <android.support.v7.widget.SearchView
+        android:id="@+id/sv2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="Search..."
+
+        />
+    <!-- Another Recycler View -->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:id="@+id/recyclcer_view_debtors"/>
+
+    </LinearLayout>
+</RelativeLayout>

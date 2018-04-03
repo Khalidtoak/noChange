@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:title="Business Wallet">
+
+        </item>
+        <item
+            android:id="@+id/nav_dashbooard"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:title="DashBoard" />
+        <item
+            android:id="@+id/nav_myChange"
+            android:icon="@drawable/ic_happy_face"
+            android:title="Change/Debtors" />
+    </group>
+    <item android:title="            personal wallet"
+        >
+        <menu>
+            <item
+                android:id="@+id/nav_dash_for_personal"
+                android:icon="@drawable/ic_dashboard_black_24dp"
+                android:title="DashBoard" />
+            <item
+                android:id="@+id/nav_credit"
+                android:icon="@drawable/ic_happy_face"
+                android:title="credit" />
+            <item
+                android:id="@+id/nav_debit"
+                android:icon="@drawable/ic_sad_face"
+                android:title="debit" />
+        </menu>
+
+
+    </item>
+</menu>

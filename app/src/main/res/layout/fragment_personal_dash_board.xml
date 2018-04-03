@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.group1.swepproject.user.nochange.Fragments.PersonalDashBoard">
+    <ListView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lizzy"
+    android:padding="10dp"
+    android:minHeight="10dp"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:elevation="12dp"
+        app:rippleColor="#ffffff"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="#105a3a"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+</RelativeLayout>
+

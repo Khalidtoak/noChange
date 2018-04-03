@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!---What is a layout?
+Just looking through developer.android.com for layouts, you’ll find plently of classes ending in ‘Layout’. What do they all have in common? They’re all subclasses of ViewGroup — a View that supports adding child Views (commonly referred to as children).
+
+As you might expect, one of the main responsibilities of a ViewGroup is laying out those children: picking how large each View is (the ‘measure’ phase) and placing the Views within the ViewGroup (the ‘layout’ phase).
+
+Note: that isn’t to say that’s all a ViewGroup is responsible for. It can certainly have its own custom behavior, draw things itself, add its own children. Toolbar, for example, has quite a bit of built-in functionality, in addition to supporting child Views.
+So it should come as no surprise that if you’re looking for a certain way that child Views are laid out, picking the right layout is going to play a big part. The wrong layout may make a certain pattern impossible or perform horribly, while another layout may simplify things.
+
+Layout_ Attributes
+Now just like any View, a ViewGroup can use XML attributes, like LinearLayout’s android:orientation, to change how they lay out their children, but these are global changes that affect every child. To change things on a child-by-child basis, layouts use a different mechanism in the form of layout_ attributes, which are added to child Views. These attributes are different because layout_ attributes are instructions for the parent ViewGroup, not for the View itself. Let’s take an example from a previous pro-tip I wrote:
+
+<android.support.design.widget.AppBarLayout>
+  <android.support.v7.widget.Toolbar
+    app:layout_scrollFlags="scroll|enterAlways" />
+</android.support.design.widget.AppBarLayout >
+If you look at Toolbar, you won’t find anything about layout_scrollFlags. Nor will you find anything if you look at AppBarLayout. Those layout_ attributes are actually stored in LayoutParams (specifically, in this case, the AppBarLayout.LayoutParams subclass). Each View, when attached to a parent, has its own LayoutParams that serves as a storage place for basically anything the parent ViewGroup wants to keep track of. By default, that’s just a width and height (that layout_width and layout_height you’ve seen on practically every View), but each ViewGroup has the opportunity to declare new attributes in their own subclass of LayoutParams (as helpfully described in the documentation).
+
+Note: This is also the #1 reason why inflating a view from XML without including a parent (i.e., passing null as the root in LayoutInflater.inflate()) is a horrible idea — without any parent, there’s no one to parse and create a proper LayoutParams object, effectively meaning all of those attributes are thrown away — probably not what you want.
+Common Android Layouts
+Just knowing about LayoutParams and the layout_ attributes explained in the documentation might be enough to help you choose the right layout for you, but a quick summary can’t hurt.
+
+LinearLayout
+LinearLayout has one goal in life: lay out children in a single row or column (depending on if its android:orientation is horizontal or vertical).
+
+However, even with that single focus, it still has a trick up its sleeve with the layout_weight attribute, which allows a child to expand its size to fill the remaining space — useful if you have a few wrap_content elements and a few others that need as much space as possible.
+
+FrameLayout
+FrameLayout acts quite differently compared to LinearLayout: here all children are drawn as a stack — overlapping or not. The only control on positioning is the layout_gravity attribute — pushing the child towards a side or centering it within the FrameLayout.
+
+RelativeLayout
+RelativeLayout is not nearly as simple as the previous two: a look at RelativeLayout.LayoutParams shows a large number of attributes all focused around positioning children relative to the edges or center of RelativeLayout (similar to FrameLayout in fact), but also relative to one another — say, one child layout_below another child.
+
+This has an advantage of being very, very powerful (laying out arbitrary children in relation to one another), but watch your performance!
+
+PercentFrameLayout and PercentRelativeLayout
+As members of the Percent Support Library, PercentFrameLayout and PercentRelativeLayout add onto their namesakes with the addition of percentage-based dimensions and margins, allowing you to use layout_widthPercent=”50%” in place of guessing at the appropriate layout_width would have to be.
+
+They also contain one of most exciting features: aspect ratio support, making it possible to declare only a single dimension (either height or width) and basing the other on a fixed aspect ratio. This even works if one dimension is wrap_content or match_parent!
+
+GridLayout
+GridLayout was introduced in Ice Cream Sandwich back in 2011, but is also available as part of its own Support Library (to support back to API 7). Designed to place items in arbitrary rows and columns and supporting the same weights as LinearLayout, it allows you to flatten your view hierarchy considerably while avoiding some of the complex arrangements of elements that affects the performance of RelativeLayout.
+
+Unlike most layouts, GridLayout does not require layout_height and layout_width for each View — columns and rows (and hence their contained children) grow and shrink as needed based on the Alignment of each. I’d strongly recommend reading over the GridLayout.LayoutParams documentation and the blog post (noting that it was written before GridLayout gained the layout_weight attribute) if you’d like to delve into this component.
+
+CoordinatorLayout
+CoordinatorLayout, part of the Android Design Support Library, is a subclass of FrameLayout and therefore inherits its use of layout_gravity to position children, but also includes the concept of a Behavior.
+
+Attaching a Behavior to a view either by using the @DefaultBehavior annotation on the class, using the layout_behavior attribute, or using setBehavior() allows that Behavior to intercept just about everything before the underlying View: measurement, layout, nested scrolling, touch events, changes to specified dependent Views, and window insets.
+
+For a deep dive into Behaviors, check out the Intercepting everything with CoordinatorLayout Behaviors post.
+
+Layouts, layouts, layouts
+Even with just the few layouts described above, you can build a rich UI that is both performant and easy to maintain. Next time you are struggling with a particular layout, consider taking a step back and seeing if there’s an easier way to do thing by using a different layout or if building your own custom layout (and taking on the responsibilities that entails — not insignificant) is the best approach.
+
+Either way, use the right layout and the right layout_ attributes to #BuildBetterApps-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.group1.swepproject.user.nochange.AddChangeOrDebt">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person_black_24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            />
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_text_name"
+            android:hint="Customer Name"
+            android:textStyle="italic"
+            android:inputType="text|textPersonName"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_name"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            />
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/edit_text_Amount"
+            android:hint="How Much?"
+            android:textStyle="italic"
+            android:inputType="number|numberDecimal"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src ="@drawable/ic_add_shopping_cart_black_24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"/>
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edit_text_Amount"
+            android:id="@+id/itemBought"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:hint="Item Bought"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src ="@drawable/ic_contact_phone_black_24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"/>
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/phone_no"
+        android:inputType="phone"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:hint="Phone Number"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin">
+
+        <!-- Linear layout that contains all three priority buttons (high, medium, low)
+        in a single line -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:weightSum="2">
+            <!--we all should be able to guess what buttons are for lol-->
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:textColor="@android:color/primary_text_light"
+                android:id="@+id/buttonP1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/materialOrange"
+                android:text="Change"
+                android:layout_weight="1"
+                />
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:textColor="@android:color/primary_text_light"
+                android:id="@+id/buttonP2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/materialRed"
+                android:text="Debt"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <!-- RadioGroup for visible selection of a priority -->
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:weightSum="2"
+            android:onClick="onPrioritySelected">
+
+            <RadioButton
+                android:id="@+id/radButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onPrioritySelected"
+                android:theme="@style/WhiteRadioButton"/>
+
+            <RadioButton
+                android:id="@+id/radButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onPrioritySelected"
+                android:theme="@style/WhiteRadioButton"/>
+
+        </RadioGroup>
+
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:id="@+id/add_profileImage"
+            app:backgroundTint="#105a3a"
+            android:src="@drawable/ic_camera_black_24dp"/>
+        <!--floating action buttons are those circuilar buttons we notice in the app
+        used for saving and stuff.. the kinda float above the screen lol-->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="16dp"
+            android:id="@+id/fab_for_save"
+            app:backgroundTint="#105a3a"
+            android:src="@drawable/ic_save_black_24dp"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

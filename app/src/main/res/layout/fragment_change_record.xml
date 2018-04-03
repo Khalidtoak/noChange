@@ -1,0 +1,40 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.group1.swepproject.user.nochange.Fragments.ChangeRecord">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <!--SearchView helps us to conduct search in the app-->
+    <android.support.v7.widget.SearchView
+        android:id="@+id/sv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:queryHint="Sesarch..."
+
+        />
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+     - This RecyclerView will be responsible for displaying our list of  data. All of  -
+     - its layout attributes should make sense to you, perhaps except for                     -
+     - android:clipToPadding="false". When we set clipToPadding to false, we are telling      -
+     - RecyclerView to not resize the over-scrolling effect that happens when you attempt to  -
+     - scroll past the end of the content.                                                    -
+     -                                                                                        -
+     - Go ahead and test it out yourself. Set clipToPadding to "true" and scroll to the very  -
+     - bottom of the list. Then, keep scrolling. You'll see the "glow" that happens. That is  -
+     - called an EdgeEffect in Android. The problem when clipToPadding is set to "true" is    -
+     - that there is a gap between the bottom of the screen and the EdgeEffect. Set           -
+     - clipToPadding to "false" again and observe how the gap is gone.                        -
+     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Another Recycler view -->
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:id="@+id/recyclcer_view_change"/>
+    </LinearLayout>
+</RelativeLayout>

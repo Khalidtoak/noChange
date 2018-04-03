@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Swipe views provide lateral navigation between sibling screens such as tabs with a horizontal finger gesture (a pattern sometimes known as horizontal paging). This lesson teaches you how to create a tab layout with swipe views for switching between tabs, or how to show a title strip instead of tabs.
+
+Swipe View Design
+
+Before
+implementing these features,
+you should understand the concepts and
+ recommendations as described in Designing Effective Navigation
+  and the Swipe Views design guide
+
+  You can create swipe views in your app using the ViewPager widget, available in the Support Library. The ViewPager is a layout widget in which each child view is a separate page (a separate tab) in the layout.
+
+To set up your layout with ViewPager,
+ add a <ViewPager> element to your XML layout. For example, if each page in the swipe view should consume the entire layout, then your
+  layout looks like this:-->
+<!--
+CoordinatorLayout is a super-powered FrameLayout.
+
+CoordinatorLayout is intended for two primary use cases:
+
+As a top-level application decor or chrome layout
+As a container for a specific interaction with one or more child views
+By specifying Behaviors for child views of a CoordinatorLayout you can provide many different interactions within a single parent and those views can also interact with one another. View classes can specify a default behavior when used as a child of a CoordinatorLayout using the CoordinatorLayout.DefaultBehavior annotation.
+
+Behaviors may be used to implement a variety of interactions and additional layout modifications ranging from sliding drawers and panels to swipe-dismissable elements and buttons that stick to other elements as they move and animate.
+
+Children of a CoordinatorLayout may have an anchor. This view id must correspond to an arbitrary descendant of the CoordinatorLayout, but it may not be the anchored child itself or a descendant of the anchored child. This can be used to place floating views relative to other arbitrary content panes.
+
+Children can specify insetEdge to describe how the view insets the CoordinatorLayout. Any child views which are set to dodge the same inset edges by dodgeInsetEdges will be moved appropriately so that the views do not overlap.-->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.group1.swepproject.user.nochange.DebtorsAndCreditorsActivity">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <!--Tab layout specifies the arrangement of the
+         tabs at the top of the screen-->
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            android:background="#004e93"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+
+</android.support.design.widget.CoordinatorLayout>
