@@ -1,62 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
-    tools:context="com.group1.swepproject.user.nochange.profileActivity">
-    <!--ImageView for displaying images-->
-    <ImageView
+    android:background="@color/colorPrimary"
+    tools:context=".profileActivity">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/imgProfile"
-        android:background="#414040"
-        tools:src="@drawable/ic_save_black_24dp"
-        />
-    <!--TextViews For displaying texts-->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/imgProfile"
-        tools:text="Khalid"
-        android:textSize="35sp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:textStyle="bold"
-        android:fontFamily="monospace"
-        android:id="@+id/name_of_customer"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_of_customer"
-        tools:text="khalid"
-        android:id="@+id/itemBought_"
-        android:layout_marginStart="16dp"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-        android:textStyle="italic"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/itemBought_"
-        tools:text="khalid"
-        android:id="@+id/how_much_"
-        android:layout_marginStart="16dp"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-        android:textStyle="italic"
-        android:layout_marginTop="8dp"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/how_much_"
-        tools:text="khalid"
-        android:layout_marginStart="16dp"
-        android:textSize="20sp"
-        android:fontFamily="monospace"
-        android:id="@+id/date_debt_or_credit"
-        android:textStyle="italic"
-        android:layout_marginTop="8dp"/>
-</RelativeLayout>
+        android:layout_height="wrap_content">
+
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.052083332" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9557292" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="139dp"
+            android:layout_marginTop="116dp"
+            android:background="@color/materialGreen"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_pic"
+            android:layout_width="0dp"
+            android:layout_height="108dp"
+            android:background="@drawable/person_white"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/view"
+            />
+
+        <TextView
+            android:id="@+id/nameOfCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            tools:text="KhalidToak"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profile_pic"
+            app:layout_constraintStart_toStartOf="@+id/profile_pic"
+            app:layout_constraintTop_toBottomOf="@+id/profile_pic" />
+        <ImageButton
+            android:id="@+id/messageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="52dp"
+            android:onClick="openTextMessageIntent"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toStartOf="@+id/profile_pic"
+            app:layout_constraintTop_toTopOf="@+id/profile_pic"
+            app:srcCompat="@drawable/ic_message_black_24dp"
+            tools:ignore="VectorDrawableCompat" />
+        <ImageButton
+            android:id="@+id/callButton2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="52dp"
+            android:onClick="callCustomer"
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic"
+            app:layout_constraintTop_toTopOf="@+id/profile_pic"
+            app:srcCompat="@drawable/ic_call_white_24dp"
+            tools:ignore="VectorDrawableCompat" />
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/info"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            android:gravity="start" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/item_bought"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toTopOf="@+id/view2" />
+
+        <TextView
+            android:id="@+id/itemBought"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            tools:text="rice" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:text="How much:"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/how_much"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="300"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Debt Or Change?: "
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/debtOrChange"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.413"
+            app:layout_constraintStart_toEndOf="@+id/textView10"
+            tools:text="debt" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:text="Date: "
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView10"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.807"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/debtOrChange"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="debt" />
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="8dp"
+            android:onClick="goBack"
+            android:background="@drawable/ic_keyboard_arrow_left_black_24dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/messageButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.023"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.166" />
+
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

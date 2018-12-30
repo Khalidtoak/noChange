@@ -3,9 +3,8 @@ package com.group1.swepproject.user.nochange.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,10 +18,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
+import com.group1.swepproject.user.nochange.AddChangeOrDebt;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
-import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.Utils.ImageDbUtils;
 import com.group1.swepproject.user.nochange.R;
 
 import static android.content.ContentValues.TAG;
@@ -87,6 +87,14 @@ public class DebtorsRecord extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_debtors_record, container, false);
         recyclerView = rootView.findViewById(R.id.recyclcer_view_debtors);
         searchView = rootView.findViewById(R.id.sv2);
+        // change close icon color
+        ImageView iconClose = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        iconClose.setColorFilter(getResources().getColor(R.color.white));
+        //change search icon color
+        ImageView iconSearch = searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
+        iconSearch.setColorFilter(getResources().getColor(R.color.white));
+
+        floatingActionButton = rootView.findViewById(R.id.fab_for_recyclcer_view_dash);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         creditorsAndDebtorsDataBase = new CreditorsAndDebtorsDataBase(getContext());
@@ -109,6 +117,12 @@ public class DebtorsRecord extends Fragment {
                 return true;
             }
         });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddChangeOrDebt.class));
+            }
+        });
         //ItemTouch helper to handle swipe to delete the saved News function
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -118,7 +132,7 @@ public class DebtorsRecord extends Fragment {
 
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                final long id1 = (long)viewHolder.itemView.getTag();
+                final long id1 = (long) viewHolder.itemView.getTag();
 
                 //delete the News with id that was swiped off
                 new AlertDialog.Builder(getContext())
@@ -149,11 +163,11 @@ public class DebtorsRecord extends Fragment {
         }).attachToRecyclerView(recyclerView);
         return rootView;
     }
-    private  boolean removeCustomer(long id)
-    {
+
+    private boolean removeCustomer(long id) {
         sqLiteDatabase = creditorsAndDebtorsDataBase.getReadableDatabase();
         return sqLiteDatabase.delete(CreditorsAndDebtorsDataBase.TABLE_NAME,
-                CreditorsAndDebtorsDataBase._ID + "=" + id, null ) > 0;
+                CreditorsAndDebtorsDataBase._ID + "=" + id, null) > 0;
     }
 
 }

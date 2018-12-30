@@ -9,11 +9,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
 
 import java.io.File;
@@ -23,11 +25,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AddChangeOrDebt extends AppCompatActivity {
     //thiis is the class where we input our values
     //declare variables
     EditText customerName, ItemBought, HowMuch, AddPhoneNumber;
-    FloatingActionButton addImage, save;
+    CircleImageView addImage;
+    FloatingActionButton save;
     private String ChangeOrDebit;
     //setter and getter for image path which be stored in the data base when we take picture of customer
 
@@ -86,17 +91,21 @@ public class AddChangeOrDebt extends AppCompatActivity {
                 //get the text of the phone number editText
                 String phoneNumber = AddPhoneNumber.getText().toString();
                 //Now we want a valid phone number so we have to do some checking here,
-                //if the phone number's first 3 character dont start with 090, 080, or 070, or the pone number
+                //if the phone number's first 3 character dont start with 090, 080, or 070,or 081 or the pone number
                 //editText length is not 11
-                if (!(phoneNumber.substring(0, 2).equals("080")
-                        ||phoneNumber.substring(0,2).equals("090") || phoneNumber.substring(0,2).equals("070")
-                || phoneNumber.length() == 11)){
-                    //you tell the user his phone number is invalid and don't go futher by calling return
-                    Toast.makeText(getApplicationContext(), "Invalid phone Number", Toast.LENGTH_LONG).show();
-                    return;
+                if (phoneNumber.length()!= 0){
+                    if (!(phoneNumber.substring(0, 2).equals("080")
+                            ||phoneNumber.substring(0,2).equals("090") || phoneNumber.substring(0,2).equals("070")
+                            || phoneNumber.length() == 11 || phoneNumber.substring(0,2).equals("081"))){
+                        //you tell the user his phone number is invalid and don't go futher by calling return
+                        Toast.makeText(getApplicationContext(), "Invalid phone Number", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
+
                 //if any of the editTexts are empty... we also tell the user and do not go further
-                if (customersname.length()==0|| boughtStuff.length()==0|| howMuch.length()==0||debtOrChange.length()==0){
+                if (customersname.length()==0|| boughtStuff.length()==0|| howMuch.length()==0||debtOrChange.length()==0 ||
+                        phoneNumber.length() ==0){
                     Toast.makeText(getApplicationContext(),"please fill in all fields" , Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -133,6 +142,7 @@ public class AddChangeOrDebt extends AppCompatActivity {
             String imagePath = saveToInternalSorage(thumbnail, createImageFile());
             //set the image path to the saved image
             setPathForImage( imagePath);
+            Glide.with(AddChangeOrDebt.this).load(imagePath).asBitmap().centerCrop().into(addImage);
             Log.d("Thumbnail", "onActivityResult: "+ imagePath);
         }
     }
@@ -161,4 +171,31 @@ public class AddChangeOrDebt extends AppCompatActivity {
         return file.getAbsolutePath();
     }
 
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        /*
+         * Normally, calling setDisplayHomeAsUpEnabled(true) (we do so in onCreate here) as well as
+         * declaring the parent activity in the AndroidManifest is all that is required to get the
+         * up button working properly. However, in this case, we want to navigate to the previous
+         * screen the user came from when the up button was clicked, rather than a single
+         * designated Activity in the Manifest.
+         *
+         * We use the up button's ID (android.R.id.home) to listen for when the up button is
+         * clicked and then call onBackPressed to navigate to the previous Activity when this
+         * happens.
+         */
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goBack(View view) {
+        onBackPressed();
+    }
 }

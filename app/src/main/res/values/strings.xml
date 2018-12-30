@@ -18,7 +18,6 @@
     </string-array>
     <string name="collect">To collect</string>
     <string name="pay">To pay</string>
-    <string name="name">Name</string>
     <string name="amount">Amount</string>
     <string name="zero">0</string>
     <string name="credits">Credits</string>
@@ -29,4 +28,13 @@
 
     <string name="back_button">back_button</string>
     <string name="background">background</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="how_much">How Much?</string>
+    <string name="item_bought">Item Bought: </string>
+    <string name="phone_number">Phone Number</string>
+    <string name="add_change_or_debt">Add Change Or Debt</string>
+    <string name="add_to_personal_wallet">Add To Personal Wallet</string>
+    <string name="dashboard">DashBoard</string>
+    <string name="records">Records</string>
+    <string name="info">Info</string>
 </resources>

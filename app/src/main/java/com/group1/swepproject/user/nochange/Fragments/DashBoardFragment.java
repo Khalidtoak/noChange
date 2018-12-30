@@ -1,7 +1,5 @@
 package com.group1.swepproject.user.nochange.Fragments;
 
-import android.app.IntentService;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,17 +17,15 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
 import com.group1.swepproject.user.nochange.AddChangeOrDebt;
-import com.group1.swepproject.user.nochange.DashBoard;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
-import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.Utils.ImageDbUtils;
 import com.group1.swepproject.user.nochange.R;
+
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -132,7 +128,7 @@ public class DashBoardFragment extends Fragment  {
                             public void onClick(DialogInterface dialog, int id) {
                                 //delete the Customer with id that was swiped off
                                 removeCustomer(id1);
-                                Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(Objects.requireNonNull(getView()), "deleted!!", Snackbar.LENGTH_SHORT).show();
                                 //now swap the cursor for proper arrangement
                                 adapters.swapCursor(getAllSaved());
                                 Log.d(TAG, "onSwiped: did something happen here??");

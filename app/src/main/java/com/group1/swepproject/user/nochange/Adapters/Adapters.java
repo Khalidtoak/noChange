@@ -1,13 +1,10 @@
 package com.group1.swepproject.user.nochange.Adapters;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,18 +12,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
-import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.Utils.CircleTransform;
-import com.group1.swepproject.user.nochange.Fragments.ChangeRecord;
 import com.group1.swepproject.user.nochange.R;
 import com.group1.swepproject.user.nochange.profileActivity;
 
-import java.util.ArrayList;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by user on 3/28/2018.
@@ -38,22 +32,27 @@ import java.util.ArrayList;
  * and the context
  * A context in android specifies where you are in your app.. it could be an activity, a fragment etc**/
 public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
-    Cursor mCursor;
-    Context context;
+    private Cursor mCursor;
+    private Context context;
+    private static int viewHolderCount;
     //Contructs for the adapters.. Constructors a basically for initialization
     public Adapters(Cursor mCursor, Context context){
         this.mCursor = mCursor;
         this.context = context;
+        viewHolderCount  = 0;
     }
 //When we extend an adapter... we have to override these 3 methods below
     @Override
     public AdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //we override the onCreateViewHolder which of Course we use to specify what happens when the recycler views are created
         //great thing is.... the code for this part is usually almost the same
-        //we always have to inflate the views from the parent context...we tell it which recycler view we areb inflating by
-        //passing the layout file from the xml and the 3rd parameter isset to false cos we dont want to attach to root immediately
+        //we always have to inflate the views from the parent context...we tell it which recycler view we are inflating by
+        //passing the layout file from the xml and the 3rd parameter is set to false cos we don't want to attach to root immediately
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_layout, parent,false);
-        return new AdapterViewHolder(view);
+        AdapterViewHolder viewHolder = new AdapterViewHolder(view);
+        // COMPLETED (15) Increment viewHolderCount and log its value
+        viewHolderCount++;
+        return viewHolder;
     }
 
     @Override
@@ -79,7 +78,7 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
             //for the Image ..we made use of glide Image loading library and using the Circle transform class created
         // in the utils package... we display the circuilar version of the image
             Glide.with(context).load(mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_IMAGE)))
-                    .transform(new CircleTransform(context)).crossFade().into(holder.imageProfile);
+                    .crossFade().into(holder.imageProfile);
             //an image button is a clickable image
             //we create a pop up menu and set a listener for it so that we click it...
         //we will bw able to perform a certain action
@@ -140,7 +139,7 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
     public class AdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         //the view holder holds our views
         //all the views we specified  in our layout will be found here by their id
-        ImageView imageProfile;
+        CircleImageView imageProfile;
         TextView CustomerName;
         TextView ItemBought;
         TextView time;
@@ -171,6 +170,7 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
             String Time = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_TIME_STAMP));
            String imgUri = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_IMAGE));
             String DebtOrChange = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_DEBT_OR_CHANGE));
+            String phoneNo= mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_PHONE_NUMBER));
             ///we launch an explicitIntent ..see def above
             Intent intentToStartProfileActivity = new Intent(context, profileActivity.class);
             //we put the values we want to display in the next page
@@ -180,6 +180,7 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
             intentToStartProfileActivity.putExtra("time", Time);
             intentToStartProfileActivity.putExtra("debt_or_change", DebtOrChange);
             intentToStartProfileActivity.putExtra("imgUri", imgUri);
+            intentToStartProfileActivity.putExtra("phoneNo", phoneNo);
             //start another activity
             context.startActivity(intentToStartProfileActivity);
         }
@@ -198,34 +199,7 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
         notifyDataSetChanged();
     }
     // Custom method to open dialer app
-    protected void openDialer(String phoneNumber){
-        /*
-            Intent
-                An intent is an abstract description of an operation to be performed. It can be
-                used with startActivity to launch an Activity, broadcastIntent to send it to any
-                interested BroadcastReceiver components, and startService(Intent) or
-                bindService(Intent, ServiceConnection, int) to communicate with a background Service.
-
-                An Intent provides a facility for performing late runtime binding between the code
-                in different applications. Its most significant use is in the launching of
-                activities, where it can be thought of as the glue between activities.
-                It is basically a passive data structure holding an abstract description
-                of an action to be performed.
-        */
-        /*
-            String ACTION_DIAL
-                Activity Action: Dial a number as specified by the data. This shows a UI with
-                the number being dialed, allowing the user to explicitly initiate the call.
-
-                Input: If nothing, an empty dialer is started; else getData() is URI of a phone
-                number to be dialed or a tel: URI of an explicit phone number.
-
-                Output: nothing.
-
-                Constant Value: "android.intent.action.DIAL"
-        */
-        // Initialize an intent to open dialer app with specified phone number
-        // It open the dialer app and allow user to call the number manually
+    private void openDialer(String phoneNumber){
         Intent intent = new Intent(Intent.ACTION_DIAL);
         // Send phone number to intent as data
         intent.setData(Uri.parse("tel:" + phoneNumber));

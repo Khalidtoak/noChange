@@ -2,9 +2,25 @@
 <resources>
     <color name="colorPrimary">#1fcabf</color>
     <color name="colorPrimaryDark">#00a491</color>
-    <color name="colorAccent">#03cdff</color>
+    <color name="colorAccent">#7B06F0</color>
     <color name="materialRed">#E74C3C</color>
     <color name="materialOrange">#E67E22</color>
     <color name="materialYellow">#F1C40F</color>
-    <color name="materialBlue">#FF0364FF</color>
+    <color name="materialGreen">#06685D</color>
+    <color name="white">#fff</color>
+
+    <!--Material Greens-->
+    <!--In between colors were created with this tool:-->
+    <!-- http://meyerweb.com/eric/tools/color-blend/#339999::1:hex -->
+    <color name="material50Green">#7B06F0</color>
+    <color name="material100Green">#7306E1</color>
+    <color name="material150Green">#6C05D3</color>
+    <color name="material200Green">#6405C4</color>
+    <color name="material250Green">#5C04B5</color>
+    <color name="material300Green">#5504A6</color>
+    <color name="material350Green">#460389</color>
+    <color name="material450Green">#3E027A</color>
+    <color name="material500Green">#36026B</color>
+    <color name="material550Green">#2F015D</color>
+    <color name="material600Green">#27014E</color>
 </resources>

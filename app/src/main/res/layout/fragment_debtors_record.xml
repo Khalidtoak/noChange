@@ -9,19 +9,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-    <android.support.v7.widget.SearchView
-        android:id="@+id/sv2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:queryHint="Search..."
 
-        />
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/sv2"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/rounded_cornered_rect"
+                    app:queryHint="Search..."
+
+                    />
     <!-- Another Recycler View -->
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:background="@drawable/rounded_cornered_rect"
         android:id="@+id/recyclcer_view_debtors"/>
 
     </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/fab_for_recyclcer_view_dash"
+        android:src="@drawable/ic_add_black_24dp"
+        app:backgroundTint="#105a3a"/>
 </RelativeLayout>

@@ -3,9 +3,7 @@ package com.group1.swepproject.user.nochange.Fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,8 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
+import com.group1.swepproject.user.nochange.AddChangeOrDebt;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
-import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.Utils.ImageDbUtils;
 import com.group1.swepproject.user.nochange.R;
 
 import static android.content.ContentValues.TAG;
@@ -94,6 +92,7 @@ public class ChangeRecord extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclcer_view_change);
         //find the searView ById
         searchView = rootView.findViewById(R.id.sv1);
+        floatingActionButton = rootView.findViewById(R.id.fab_for_recyclcer_view_dash);
         //setLayout manager to a vertical linear layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         //setFixed size for recycler view
@@ -106,6 +105,12 @@ public class ChangeRecord extends Fragment {
                 getContext());
         ///set the adapter of the recycler view
         recyclerView.setAdapter(adapters);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), AddChangeOrDebt.class));
+            }
+        });
         //When the text in the search view changes .. we listen to it and re-do our  querying
         //by initializing the adapter and passing in the new cursor
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

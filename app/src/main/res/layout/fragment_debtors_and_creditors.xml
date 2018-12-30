@@ -33,7 +33,7 @@ Children can specify insetEdge to describe how the view insets the CoordinatorLa
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.group1.swepproject.user.nochange.DebtorsAndCreditorsActivity">
+   >
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,9 +44,12 @@ Children can specify insetEdge to describe how the view insets the CoordinatorLa
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#fff"
+            app:tabTextColor="#000"
+            app:tabSelectedTextColor="@color/materialGreen"
+            app:tabIndicatorColor="@color/materialGreen"
             app:tabMode="fixed"
-            app:tabGravity="fill"
-            android:background="#004e93"/>
+            app:tabGravity="fill"/>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager
