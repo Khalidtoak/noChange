@@ -15,7 +15,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/rounded_cornered_rect"
                     app:queryHint="Search..."
 
                     />
@@ -23,7 +22,6 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rounded_cornered_rect"
         android:id="@+id/recyclcer_view_debtors"/>
 
     </LinearLayout>

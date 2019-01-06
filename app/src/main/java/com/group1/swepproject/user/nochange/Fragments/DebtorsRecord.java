@@ -87,13 +87,6 @@ public class DebtorsRecord extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_debtors_record, container, false);
         recyclerView = rootView.findViewById(R.id.recyclcer_view_debtors);
         searchView = rootView.findViewById(R.id.sv2);
-        // change close icon color
-        ImageView iconClose = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
-        iconClose.setColorFilter(getResources().getColor(R.color.white));
-        //change search icon color
-        ImageView iconSearch = searchView.findViewById(android.support.v7.appcompat.R.id.search_button);
-        iconSearch.setColorFilter(getResources().getColor(R.color.white));
-
         floatingActionButton = rootView.findViewById(R.id.fab_for_recyclcer_view_dash);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
