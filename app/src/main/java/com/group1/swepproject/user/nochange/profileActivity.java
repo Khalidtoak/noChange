@@ -2,11 +2,21 @@ package com.group1.swepproject.user.nochange;
 
 import android.content.Intent;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.group1.swepproject.user.nochange.data.Constant;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,5 +67,14 @@ public class profileActivity extends AppCompatActivity {
         intent.setData(Uri.parse("tel:" + phoneNo));
         // Start the dialer app activity with number
         startActivity(intent);
+    }
+
+    public void deleteCustomer(View view) {
+        FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION).document(FirebaseAuth.getInstance()
+        .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).document(phoneNo)
+                .delete().addOnSuccessListener(aVoid -> {
+                    Snackbar.make(view,"Deleted", Snackbar.LENGTH_SHORT ).show();
+                    finish();
+                }).addOnFailureListener(e -> Toast.makeText(profileActivity.this, "Couldn't delete data", Toast.LENGTH_SHORT).show());
     }
 }

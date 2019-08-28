@@ -127,42 +127,6 @@ public class DashBoardFragment extends Fragment  {
             Intent intent = new Intent(getActivity(), AddChangeOrDebt.class);
             startActivity(intent);
         });
-        //ItemTouch helper to handle swipe to delete the saved News function
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                final long id1 = (long)viewHolder.itemView.getTag();
-
-                //delete the News with id that was swiped off
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Delete?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //delete the Customer with id that was swiped off
-
-                                Snackbar.make(Objects.requireNonNull(getView()), "deleted!!", Snackbar.LENGTH_SHORT).show();
-                                //now swap the cursor for proper arrangement
-                                //adapter.swapCursor(getAllSaved());
-                                Log.d(TAG, "onSwiped: did something happen here??");
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //adapter.swapCursor(getAllSaved());
-                            }
-                        })
-                        .show();
-
-
-            }
-        }).attachToRecyclerView(recyclerView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

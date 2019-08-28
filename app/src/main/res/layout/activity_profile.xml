@@ -232,6 +232,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.166" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="delete customer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="16dp"
+            android:textSize="20sp"
+            android:textColor="#ffff"
+            android:onClick="deleteCustomer"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

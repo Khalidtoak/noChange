@@ -102,7 +102,7 @@ public class DebtorsRecord extends Fragment {
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).
                         collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId",
                         FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .whereEqualTo("type", "Debt");
+                .whereEqualTo("type", "Debtors");
         displayData(query);
         recyclerView.setAdapter(adapters);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -125,37 +125,6 @@ public class DebtorsRecord extends Fragment {
         });
         floatingActionButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), AddChangeOrDebt.class)));
         //ItemTouch helper to handle swipe to delete the saved News function
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
-                final long id1 = (long) viewHolder.itemView.getTag();
-                //delete the News with id that was swiped off
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Delete?")
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", (dialog, id) -> {
-                            //delete the News with id that was swiped off
-
-                            removeCustomer(id1);
-                            Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
-                            //now swap the cursor for proper arrangement
-                            // adapter.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
-                        })
-                        .setNegativeButton("No", (dialogInterface, i) -> {
-                            // adapter.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
-                        })
-                        .show();
-
-                Log.d(TAG, "onSwiped: did something happen here??");
-                Log.d(TAG, "onSwiped: did something happen here??");
-
-            }
-        }).attachToRecyclerView(recyclerView);
         return rootView;
     }
 

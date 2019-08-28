@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
@@ -56,7 +57,7 @@ public class AddChangeOrDebt extends AppCompatActivity {
     //Rad buttons for selecting whether debtor or creditor
     RadioButton ChangeradButton, DebtRadButton;
     private int REQUEST_CAPTURE_IMAGE = 456;
-
+    private String phoneNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +78,11 @@ public class AddChangeOrDebt extends AppCompatActivity {
         ChangeradButton.setChecked(true);
         ChangeOrDebit = "Change";
         //when you click on the floating action button for taking a picture
-        addImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //use an implicit intent to launch camera
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //startActivity
-                startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
-            }
+        addImage.setOnClickListener(view -> {
+            //use an implicit intent to launch camera
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //startActivity
+            startActivityForResult(intent, REQUEST_CAPTURE_IMAGE);
         });
         //when we click save
         save.setOnClickListener(view -> {
@@ -97,7 +95,7 @@ public class AddChangeOrDebt extends AppCompatActivity {
             // get the change or debt rad button
             String debtOrChange = ChangeOrDebit;
             //get the text of the phone number editText
-            String phoneNumber = AddPhoneNumber.getText().toString();
+            phoneNumber = AddPhoneNumber.getText().toString();
             //Now we want a valid phone number so we have to do some checking here,
             //if the phone number's first 3 character dont start with 090, 080, or 070,or 081 or the pone number
             //editText length is not 11
@@ -219,7 +217,8 @@ public class AddChangeOrDebt extends AppCompatActivity {
                     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
                     firestore.collection(Constant.USER_COLLECTION).document(FirebaseAuth.getInstance()
-                            .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).add(payment)
+                            .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).
+                document(phoneNumber).set(payment, SetOptions.merge())
                             .addOnSuccessListener(aVoid -> {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 save.setEnabled(true);
