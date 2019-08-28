@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,9 +18,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
 import com.group1.swepproject.user.nochange.R;
+import com.group1.swepproject.user.nochange.models.Payment;
 import com.group1.swepproject.user.nochange.profileActivity;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,17 +38,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * every time we scroll in this adapter... we pass in the cursor returned from the query method
  * and the context
  * A context in android specifies where you are in your app.. it could be an activity, a fragment etc**/
-public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
-    private Cursor mCursor;
+public class Adapters extends FirestoreAdapter<Adapters.AdapterViewHolder>{
     private Context context;
     private static int viewHolderCount;
-    //Contructs for the adapters.. Constructors a basically for initialization
-    public Adapters(Cursor mCursor, Context context){
-        this.mCursor = mCursor;
+
+    public Adapters(Query query,Context context) {
+        super(query);
         this.context = context;
-        viewHolderCount  = 0;
     }
-//When we extend an adapter... we have to override these 3 methods below
+
+    //When we extend an adapter... we have to override these 3 methods below
     @Override
     public AdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //we override the onCreateViewHolder which of Course we use to specify what happens when the recycler views are created
@@ -57,27 +63,27 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
 
     @Override
     public void onBindViewHolder(final AdapterViewHolder holder, int position) {
-        //here the views are binded to the view holder
-        //we move our cursor to the position on the recycler view adapter
-        mCursor.moveToPosition(position);
         //get the values in our table that we have queried
         //by calling get column Index
         //and passing the column name
-        final String customerName = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_CUSTOMER_NAME));
-        String boughtStuff = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_ITEM_BOUGHT));
-        String howMuch = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_HOW_MUCH));
-        String Time = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_TIME_STAMP));
-        String DebtOrChange = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_DEBT_OR_CHANGE));
-        final String phoneNo = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_PHONE_NUMBER));
+        List<DocumentSnapshot> paymentSnapShots = getSnapshots();
+        Payment payment= paymentSnapShots.get(position).toObject(Payment.class);
+        final String customerName = payment.getCustomerName();
+        String boughtStuff = payment.getItem();
+        String howMuch = payment.getAmount();
+        String Time = payment.getTimestamp().toString();
+        String DebtOrChange = payment.getType();
+        final String phoneNo = payment.getPhoneNumber();
+        Log.d("customerName", customerName + " = ");
         //display this data on our recyclerview
             holder.CustomerName.setText(customerName);
             holder.ItemBought.setText("bought Item: " + boughtStuff);
             holder.amount.setText(howMuch + "Naira");
             holder.time.setText(Time);
-            holder.itemView.setTag(mCursor.getLong(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase._ID)));
+            //holder.itemView.setTag());
             //for the Image ..we made use of glide Image loading library and using the Circle transform class created
         // in the utils package... we display the circuilar version of the image
-            Glide.with(context).load(mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_IMAGE)))
+            Glide.with(context).load(payment.getImageUrl())
                     .crossFade().into(holder.imageProfile);
             //an image button is a clickable image
             //we create a pop up menu and set a listener for it so that we click it...
@@ -127,12 +133,6 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
             });
 
     }
-
-    @Override
-    public int getItemCount() {
-        return mCursor.getCount();
-    }
-
     // note that our viewHolder implements the OnClicklistener interface.
     //Recycler views do not have a default onClickListener like buttons so that is why we have
     //to implement this interface to make each view clickable
@@ -163,14 +163,15 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
         public void onClick(View view) {
             //when we click the recyclerview
             //we move the cursor to our adapter position
-            mCursor.moveToPosition(getAdapterPosition());
-            String customerName = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_CUSTOMER_NAME));
-            String boughtStuff = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_ITEM_BOUGHT));
-            String howMuch = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_HOW_MUCH));
-            String Time = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_TIME_STAMP));
-           String imgUri = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_IMAGE));
-            String DebtOrChange = mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_DEBT_OR_CHANGE));
-            String phoneNo= mCursor.getString(mCursor.getColumnIndex(CreditorsAndDebtorsDataBase.COLUMN_PHONE_NUMBER));
+            List<DocumentSnapshot> paymentSnapShots = getSnapshots();
+            Payment payment= paymentSnapShots.get(getAdapterPosition()).toObject(Payment.class);
+            String customerName = payment.getCustomerName();
+            String boughtStuff = payment.getItem();
+            String howMuch = payment.getAmount();
+            String Time = payment.getTimestamp().toString();
+           String imgUri = payment.getImageUrl();
+            String DebtOrChange = payment.getType();
+            String phoneNo= payment.getPhoneNumber();
             ///we launch an explicitIntent ..see def above
             Intent intentToStartProfileActivity = new Intent(context, profileActivity.class);
             //we put the values we want to display in the next page
@@ -187,17 +188,6 @@ public class Adapters extends RecyclerView.Adapter<Adapters.AdapterViewHolder>{
     }
     //when we delete an item... we use this method to swap the cursor by closing it so that a gap will
     //not be left in the recycler view
-    public void swapCursor(Cursor newCursor)
-    {
-        if (mCursor == null){
-            mCursor.close();
-        }
-        mCursor =newCursor;
-        if (newCursor == null){
-            this.notifyDataSetChanged();
-        }
-        notifyDataSetChanged();
-    }
     // Custom method to open dialer app
     private void openDialer(String phoneNumber){
         Intent intent = new Intent(Intent.ACTION_DIAL);

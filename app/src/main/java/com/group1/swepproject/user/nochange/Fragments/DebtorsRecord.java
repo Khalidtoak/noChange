@@ -4,26 +4,33 @@ package com.group1.swepproject.user.nochange.Fragments;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
 import com.group1.swepproject.user.nochange.AddChangeOrDebt;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
 import com.group1.swepproject.user.nochange.R;
+import com.group1.swepproject.user.nochange.data.Constant;
 
 import static android.content.ContentValues.TAG;
 
@@ -91,8 +98,12 @@ public class DebtorsRecord extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
         creditorsAndDebtorsDataBase = new CreditorsAndDebtorsDataBase(getContext());
-        adapters = new Adapters(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"),
-                getContext());
+        Query query = FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION)
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).
+                        collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId",
+                        FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("type", "Debt");
+        displayData(query);
         recyclerView.setAdapter(adapters);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -102,20 +113,17 @@ public class DebtorsRecord extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                String query = searchView.getQuery().toString();
-                adapters = new Adapters(
-                        creditorsAndDebtorsDataBase.retrieveByViewPagerAndSearchedText(query, "Debtors"),
-                        getContext());
+                String query1 = searchView.getQuery().toString();
+                adapters.setQuery(FirebaseFirestore.getInstance().collection(Constant
+                        .USER_COLLECTION).document(FirebaseAuth.getInstance()
+                        .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION)
+                        .whereEqualTo("userId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .whereEqualTo("type", "Debt").whereGreaterThanOrEqualTo("customerName", query1));
                 recyclerView.setAdapter(adapters);
                 return true;
             }
         });
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddChangeOrDebt.class));
-            }
-        });
+        floatingActionButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), AddChangeOrDebt.class)));
         //ItemTouch helper to handle swipe to delete the saved News function
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -126,26 +134,20 @@ public class DebtorsRecord extends Fragment {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 final long id1 = (long) viewHolder.itemView.getTag();
-
                 //delete the News with id that was swiped off
                 new AlertDialog.Builder(getContext())
                         .setMessage("Delete?")
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //delete the News with id that was swiped off
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            //delete the News with id that was swiped off
 
-                                removeCustomer(id1);
-                                Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
-                                //now swap the cursor for proper arrangement
-                                adapters.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
-                            }
+                            removeCustomer(id1);
+                            Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
+                            //now swap the cursor for proper arrangement
+                            // adapter.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                adapters.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
-                            }
+                        .setNegativeButton("No", (dialogInterface, i) -> {
+                            // adapter.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Debtors"));
                         })
                         .show();
 
@@ -163,4 +165,34 @@ public class DebtorsRecord extends Fragment {
                 CreditorsAndDebtorsDataBase._ID + "=" + id, null) > 0;
     }
 
+    private void displayData(Query query) {
+        adapters = new Adapters(query, requireActivity()) {
+            @Override
+            protected void onDataChanged() {
+                super.onDataChanged();
+                if (getItemCount() == 0) {
+                    Toast.makeText(requireContext(), "You have no debtor", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                super.onError(e);
+                Toast.makeText(requireContext(), "Couldn't load data", Toast.LENGTH_SHORT).show();
+            }
+        };
+        recyclerView.setAdapter(adapters);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapters.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapters.stopListening();
+    }
 }

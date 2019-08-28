@@ -3,28 +3,40 @@ package com.group1.swepproject.user.nochange.Fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
 import com.group1.swepproject.user.nochange.AddChangeOrDebt;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
 import com.group1.swepproject.user.nochange.R;
+import com.group1.swepproject.user.nochange.data.Constant;
+import com.group1.swepproject.user.nochange.models.AppViewModel;
+import com.group1.swepproject.user.nochange.models.Payment;
 
+import java.util.List;
 import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
@@ -44,12 +56,15 @@ public class DashBoardFragment extends Fragment  {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    FloatingActionButton floatingActionButton;
-    RecyclerView recyclerView;
-    Adapters adapters;
-    SearchView searchView;
-    SQLiteDatabase sqLiteDatabase;
-    CreditorsAndDebtorsDataBase creditorsAndDebtorsDataBase;
+    private FloatingActionButton floatingActionButton;
+    private RecyclerView recyclerView;
+    private Adapters adapter;
+    private SearchView searchView;
+    private SQLiteDatabase sqLiteDatabase;
+    private CreditorsAndDebtorsDataBase creditorsAndDebtorsDataBase;
+    ProgressBar progressBar;
+    ImageButton imageButton;
+    AppViewModel appViewModel;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -94,20 +109,23 @@ public class DashBoardFragment extends Fragment  {
         // Inflate the layout for this fragment
         View rootV= inflater.inflate(R.layout.fragment_dash_board, container, false);
         recyclerView = rootV.findViewById(R.id.recyclcer_view_dash);
+        appViewModel = new AppViewModel(Objects.requireNonNull(getActivity()).getApplication());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        creditorsAndDebtorsDataBase = new CreditorsAndDebtorsDataBase(getContext());
         searchView = rootV.findViewById(R.id.sv);
-        sqLiteDatabase = creditorsAndDebtorsDataBase.getWritableDatabase();
-        adapters = new Adapters(getAllSaved(), getContext());
-        recyclerView.setAdapter(adapters);
+        progressBar = rootV.findViewById(R.id.progressBar);
+        imageButton = rootV.findViewById(R.id.redo_button);
         floatingActionButton = rootV.findViewById(R.id.fab_for_recyclcer_view_dash);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddChangeOrDebt.class);
-                startActivity(intent);
-            }
+        final Query query =  FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION).document(FirebaseAuth.getInstance()
+                .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId",FirebaseAuth.getInstance().getCurrentUser().getUid());
+        displayData(query);
+        imageButton.setOnClickListener(view->{
+            imageButton.setVisibility(View.INVISIBLE);
+            displayData(query);
+        });
+        floatingActionButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), AddChangeOrDebt.class);
+            startActivity(intent);
         });
         //ItemTouch helper to handle swipe to delete the saved News function
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -127,17 +145,17 @@ public class DashBoardFragment extends Fragment  {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 //delete the Customer with id that was swiped off
-                                removeCustomer(id1);
+
                                 Snackbar.make(Objects.requireNonNull(getView()), "deleted!!", Snackbar.LENGTH_SHORT).show();
                                 //now swap the cursor for proper arrangement
-                                adapters.swapCursor(getAllSaved());
+                                //adapter.swapCursor(getAllSaved());
                                 Log.d(TAG, "onSwiped: did something happen here??");
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                adapters.swapCursor(getAllSaved());
+                                //adapter.swapCursor(getAllSaved());
                             }
                         })
                         .show();
@@ -153,9 +171,12 @@ public class DashBoardFragment extends Fragment  {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                String query = searchView.getQuery().toString();
-                adapters = new Adapters( creditorsAndDebtorsDataBase.retrieve(query), getContext());
-                recyclerView.setAdapter(adapters);
+                String query1 = searchView.getQuery().toString();
+                final Query query =  FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION).document(FirebaseAuth.getInstance()
+                        .getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .whereGreaterThanOrEqualTo("customerName" , query1);
+               adapter.setQuery(query);
+               //displayData(query);
                 return true;
             }
         });
@@ -201,17 +222,43 @@ public class DashBoardFragment extends Fragment  {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    //get all saved queries the whole database since here we are not classifying the data according debtors or creditors
-    private Cursor getAllSaved(){
-        return sqLiteDatabase.query(CreditorsAndDebtorsDataBase.TABLE_NAME,
-                null, null, null, null, null,
-                CreditorsAndDebtorsDataBase._ID);
-    }
     private  boolean removeCustomer(long id)
     {
         return sqLiteDatabase.delete(CreditorsAndDebtorsDataBase.TABLE_NAME,
                 CreditorsAndDebtorsDataBase._ID + "=" + id, null ) > 0;
     }
+    private void displayData(Query query){
+        adapter = new Adapters(query, requireActivity()){
+            @Override
+            protected void onDataChanged() {
+                super.onDataChanged();
+                progressBar.setVisibility(View.INVISIBLE);
+                if (getItemCount() == 0){
+                    Toast.makeText(requireContext(), "You are not owing change", Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                super.onError(e);
+                Log.e("Error", e + e.getMessage());
+                progressBar.setVisibility(View.INVISIBLE);
+                imageButton.setVisibility(View.VISIBLE);
+                Toast.makeText(getActivity()
+                        , "Unable to load data" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        recyclerView.setAdapter(adapter);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
 
-}
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
+    }

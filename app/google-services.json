@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "382825096029",
+    "firebase_url": "https://nochange-ed521.firebaseio.com",
+    "project_id": "nochange-ed521",
+    "storage_bucket": "nochange-ed521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382825096029:android:588da2b438928623",
+        "android_client_info": {
+          "package_name": "com.group1.swepproject.user.nochange"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382825096029-2c0ksfkvmn2i2es05vkg8hvhgm5pph28.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group1.swepproject.user.nochange",
+            "certificate_hash": "4f3d916bc3d86a7bd578ca9a706039751ba36350"
+          }
+        },
+        {
+          "client_id": "382825096029-f8ivp2tgkfrtpc7purp0s1pjel7c0rdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCWJoUGTdHXJx3Ju69kxKGnC3Ynj7aAvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382825096029-f8ivp2tgkfrtpc7purp0s1pjel7c0rdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

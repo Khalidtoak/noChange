@@ -5,23 +5,31 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.group1.swepproject.user.nochange.Adapters.Adapters;
 import com.group1.swepproject.user.nochange.AddChangeOrDebt;
 import com.group1.swepproject.user.nochange.DataBaseForTheDebtorsAndCreditors.CreditorsAndDebtorsDataBase;
 import com.group1.swepproject.user.nochange.R;
+import com.group1.swepproject.user.nochange.data.Constant;
 
 import static android.content.ContentValues.TAG;
 
@@ -42,16 +50,16 @@ public class ChangeRecord extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     //declare all variables needed
     RecyclerView recyclerView;
-    Adapters adapters;
+    Adapters adapter;
     SearchView searchView;
     SQLiteDatabase sqLiteDatabase;
     FloatingActionButton floatingActionButton;
     CreditorsAndDebtorsDataBase creditorsAndDebtorsDataBase;
+    ProgressBar progressBar;
+    ImageButton imageButton;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-
     public ChangeRecord() {
         // Required empty public constructor
     }
@@ -91,26 +99,17 @@ public class ChangeRecord extends Fragment {
         //find the recycler view in its xml by its id
         recyclerView = rootView.findViewById(R.id.recyclcer_view_change);
         //find the searView ById
+        progressBar = rootView.findViewById(R.id.progressBar);
         searchView = rootView.findViewById(R.id.sv1);
         floatingActionButton = rootView.findViewById(R.id.fab_for_recyclcer_view_dash);
+        imageButton = rootView.findViewById(R.id.redo_button);
         //setLayout manager to a vertical linear layout manager
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         //setFixed size for recycler view
         recyclerView.setHasFixedSize(true);
-        //initialize database
-        creditorsAndDebtorsDataBase = new CreditorsAndDebtorsDataBase(getContext());
-        //initialize  the adapter and pass in the context of the activity and retrieve by calling the method we
-        //created in the database and passing it in as the cursor
-        adapters = new Adapters(creditorsAndDebtorsDataBase.retrieveByViewpager("Change"),
-                getContext());
-        ///set the adapter of the recycler view
-        recyclerView.setAdapter(adapters);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddChangeOrDebt.class));
-            }
-        });
+        displayData(FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION).document(FirebaseAuth.getInstance().getCurrentUser().getUid()).collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId",
+                FirebaseAuth.getInstance().getCurrentUser().getUid()).whereEqualTo("type", "Change"));
+        floatingActionButton.setOnClickListener(view -> startActivity(new Intent(getActivity(), AddChangeOrDebt.class)));
         //When the text in the search view changes .. we listen to it and re-do our  querying
         //by initializing the adapter and passing in the new cursor
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -121,13 +120,12 @@ public class ChangeRecord extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //get the query and convert it to a string
                 String query = searchView.getQuery().toString();
-                adapters = new Adapters(
-                        creditorsAndDebtorsDataBase.retrieveByViewPagerAndSearchedText(query, "Change"),
-                        getContext());
-                //re set the adapter
-                recyclerView.setAdapter(adapters);
+                adapter.setQuery(FirebaseFirestore.getInstance().collection(Constant.USER_COLLECTION)
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .collection(Constant.PAYMENT_COLLECTION).whereEqualTo("userId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo("type", "Change").whereGreaterThanOrEqualTo("customerName", query));
+                recyclerView.setAdapter(adapter);
                 return true;
             }
         });
@@ -146,25 +144,12 @@ public class ChangeRecord extends Fragment {
                 new AlertDialog.Builder(getContext())
                         .setMessage("Delete?")
                         .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //if yes is selected
-                                //delete that customer and pass in the id
-                                //delete the News with id that was swiped off
-
-                                removeCustomer(id1);
-                                //create a snack bar that tells the user iif it has been deleted or not
-                                Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
-                                //now swap the cursor for proper arrangement
-                                adapters.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Change"));
-                            }
+                        .setPositiveButton("Yes", (dialog, id) -> {
+                            Snackbar.make(getView(), "deleted!!", Snackbar.LENGTH_LONG).show();
                         })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //if no is clicked... just swap  cursor for proper arrangement
-                                adapters.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Change"));
-                            }
+                        .setNegativeButton("No", (dialogInterface, i) -> {
+                            //if no is clicked... just swap  cursor for proper arrangement
+                           // adapter.swapCursor(creditorsAndDebtorsDataBase.retrieveByViewpager("Change"));
                         })
                         //show the dialog
                         .show();
@@ -182,5 +167,39 @@ public class ChangeRecord extends Fragment {
         return sqLiteDatabase.delete(CreditorsAndDebtorsDataBase.TABLE_NAME,
                 CreditorsAndDebtorsDataBase._ID + "=" + id, null ) > 0;
     }
+    private void displayData(Query query){
+        adapter = new Adapters(query, requireActivity()){
+            @Override
+            protected void onDataChanged() {
+                super.onDataChanged();
+                progressBar.setVisibility(View.INVISIBLE);
+                if (getItemCount() == 0){
+                    Toast.makeText(requireContext(), "You are not owing change", Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                super.onError(e);
+                Log.e("Error", e + e.getMessage());
+                progressBar.setVisibility(View.INVISIBLE);
+                imageButton.setVisibility(View.VISIBLE);
+                Toast.makeText(getActivity()
+                        , "Unable to load data" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        recyclerView.setAdapter(adapter);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
 }
+

@@ -10,19 +10,19 @@
         android:orientation="vertical"
         >
         <!--SearchView helps us to conduct search in the app-->
-    <android.support.v7.widget.SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/sv1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:queryHint="Sesarch..."
 
         />
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recyclcer_view_change"/>
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -31,4 +31,17 @@
         android:id="@+id/fab_for_recyclcer_view_dash"
         android:src="@drawable/ic_add_black_24dp"
         app:backgroundTint="#105a3a"/>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        />
+    <ImageButton
+        android:visibility="invisible"
+        android:id="@+id/redo_button"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_redo_black_24dp"/>
 </RelativeLayout>
