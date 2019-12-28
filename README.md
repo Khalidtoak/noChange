@@ -4,3 +4,5 @@ you can call people that are owing you or send them a text message... it uses sq
 Here are a few screenshots:
 
 ![Screenshot](Screen%20Shot%202019-12-28%20at%2012.44.06%20AM.png)
+![Screenshot](Screen%20Shot%202019-12-28%20at%2012.44.37%20AM.png)
+![Screenshot](Screen%20Shot%202019-12-28%20at%2012.45.43%20AM.png)
